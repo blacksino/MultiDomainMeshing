@@ -1,13 +1,3 @@
-#ifndef INITIAL_OPENGL
-#define INITIAL_OPENGL
-
-#include <vtkAutoInit.h>
-VTK_MODULE_INIT(vtkRenderingOpenGL2)
-VTK_MODULE_INIT(vtkInteractionStyle)
-VTK_MODULE_INIT(vtkRenderingContextOpenGL2)
-VTK_MODULE_INIT(vtkRenderingFreeType)
-#endif
-
 
 #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
 #include <CGAL/Mesh_triangulation_3.h>
@@ -23,7 +13,7 @@ VTK_MODULE_INIT(vtkRenderingFreeType)
 #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
 #include <CGAL/Tetrahedral_remeshing/Remeshing_triangulation_3.h>
 #include <CGAL/tetrahedral_remeshing.h>
-#include "/home/SENSETIME/xulixin2/code/cgal-master/Tetrahedral_remeshing/examples/Tetrahedral_remeshing/tetrahedral_remeshing_generate_input.h"
+#include "test.h"
 
 #include <iostream>
 #include <fstream>
@@ -33,23 +23,8 @@ VTK_MODULE_INIT(vtkRenderingFreeType)
 #include <CGAL/IO/File_binary_mesh_3.h>
 #include <CGAL/IO/File_medit.h>
 #include <CGAL/IO/File_tetgen.h>
-#include <vtkSmartPointer.h>
-#include <vtkPolyData.h>
-#include <vtkPolyDataMapper.h>
-#include <vtkAppendPolyData.h>
-#include <vtkActor.h>
-#include <vtkRenderer.h>
-#include <vtkRenderWindow.h>
-#include <vtkRenderWindowInteractor.h>
-#include <vtkPoints.h>
-#include <vtkCell.h>
-#include <vtkCellData.h>
-#include <vtkProperty.h>
 #include <CGAL/IO/io.h>
-#include <vtkUnstructuredGrid.h>
-#include <vtkUnstructuredGridWriter.h>
-#include <vtkUnstructuredGridReader.h>
-#include <vtkXMLUnstructuredGridReader.h>
+
 
 // Domain
 typedef CGAL::Exact_predicates_inexact_constructions_kernel K;
@@ -108,53 +83,40 @@ int main(int argc, char* argv[])
 //
 
 
-
     const std::string fname = (argc>1)?argv[1]:CGAL::data_file_path("/home/SENSETIME/xulixin2/merged_liver.inr");
     std::cout<<fname<<std::endl;
+    // get the base name of the file
+    std::string::size_type st = fname.find_last_of("/");
+    std::string::size_type ed = fname.find_last_of(".");
+    std::string base_name = fname.substr(st+1,ed-st-1);
+
+
     CGAL::Image_3 image;
     if(!image.read(fname)){
         std::cerr << "Error: Cannot read file " <<  fname << std::endl;
         return EXIT_FAILURE;
     }
     Mesh_domain domain = Mesh_domain::create_labeled_image_mesh_domain(image);
-    double vessel_size = 5;
-
-    Sizing_field size(15);
-    size.set_size(vessel_size,3,domain.index_from_subdomain_index(2));
-    size.set_size(vessel_size,3,domain.index_from_subdomain_index(1));
-
+    double vessel_size = 8;
+    Sizing_field size(20);
+    size.set_size(vessel_size,3,domain.index_from_subdomain_index(11));
+    size.set_size(vessel_size,3,domain.index_from_subdomain_index(10));
     // Mesh criteria
-    Mesh_criteria criteria(facet_angle=25, facet_size=8, facet_distance=4,
+    Mesh_criteria criteria(facet_angle=30, facet_size=4, facet_distance=2,
                            cell_radius_edge_ratio=3, cell_size=size);
+    std::cout<< "Starting Mesh Generation..."<<std::endl;
     C3T3 c3t3 = CGAL::make_mesh_3<C3T3>(domain, criteria);
+    std::cout<< "Mesh Generation Finished!"<<std::endl;
     CGAL::refine_mesh_3(c3t3,domain,criteria);
     // Output
-    std::ofstream medit_file("simple_liver.mesh");
-    std::ofstream vtu_file("simple_liver.vtu");
+    std::ofstream vtu_file(base_name+".vtu");
 
     Points visual_surface_points, visual_interior_vessel_points;
     Faces visual_surface_faces, visual_interior_vessel_faces;
-    user_defined_output_boundary_of_c3t3(c3t3,4,visual_surface_points,visual_surface_faces);
-    user_defined_output_boundary_of_c3t3(c3t3,1,visual_interior_vessel_points,visual_interior_vessel_faces);
-    c3t3.output_to_medit(medit_file);
+    user_defined_output_boundary_of_c3t3(c3t3,10,visual_surface_points,visual_surface_faces);
+    user_defined_output_boundary_of_c3t3(c3t3,11,visual_interior_vessel_points,visual_interior_vessel_faces);
     CGAL::IO::output_to_vtu(vtu_file,c3t3,CGAL::IO::ASCII);
-    CGAL::IO::output_to_tetgen("simple_tetgen",c3t3);
-
-    std::ofstream outFile;
-    outFile.open("simple.off");
-
-    // Output
-    std::stringstream off_file;
-
-    c3t3.output_facets_in_complex_to_off(off_file);
-//    c3t3.output_boundary_to_off(off_file);
-    assert( off_file.str().size() > 20 );
-
-    outFile << off_file.rdbuf();
-    outFile.close();
-
-
-
+    CGAL::IO::output_to_tetgen(base_name,c3t3);
 
     return 0;
 }

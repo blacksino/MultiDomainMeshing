@@ -1,4 +1,4 @@
-#include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
+/home/SENSETIME/xulixin2/RJ_demo/mesh/all.inr#include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
 
 #include <CGAL/Mesh_triangulation_3.h>
 #include <CGAL/Mesh_complex_3_in_triangulation_3.h>
