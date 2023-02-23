@@ -86,6 +86,6 @@ def nii2inr(nii_path,target_path):
 
 if __name__ == '__main__':
     target_inria_filename = "/home/SENSETIME/xulixin2/RJ_demo/mesh/all.inr"
-    itk_path = "/home/SENSETIME/xulixin2/RJ_demo/volume/all.nii.gz"
+    itk_path = "/home/SENSETIME/xulixin2/RJ_demo/volume/no_gall.nii.gz"
     nii2inr(itk_path,target_inria_filename)
     get_data_from_inria_image(target_inria_filename)

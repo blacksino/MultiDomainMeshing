@@ -32,6 +32,7 @@ if __name__ == '__main__':
     all_arr = (seg_arr | organ_array)
     all_arr[vessel_array!=0] = 11
 
+    all_arr[all_arr == 10] = 0
     all_img = sitk.GetImageFromArray(all_arr)
     all_img.CopyInformation(pv_img)
-    sitk.WriteImage(all_img, os.path.join(root_dir, 'all.nii.gz'))
+    sitk.WriteImage(all_img, os.path.join(root_dir, 'no_gall.nii.gz'))

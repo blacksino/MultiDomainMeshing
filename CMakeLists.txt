@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.20)
 project(MultiDomainMeshing)
+# set cpp standard
+set(CMAKE_CXX_STANDARD 17)
 
 #set(Boost_NO_BOOST_CMAKE ON)
 set(Boost_NO_SYSTEM_PATHS ON)
@@ -12,9 +14,7 @@ message(STATUS "Boost include dirs: ${Boost_INCLUDE_DIRS}")
 
 
 set(CGAL_DIR "/home/SENSETIME/xulixin2/code/cgal-master")
-#set(Boost_DIR "/home/SENSETIME/xulixin2/Downloads/Boost_1_68_0/Boost_1.68_install")
-#set(BOOST_INCLUDEDIR /home/SENSETIME/xulixin2/Downloads/boost_1_68_0/boost_1.68_install/include)
-#set(BOOST_LIBRARYDIR /home/SENSETIME/xulixin2/Downloads/boost_1_68_0/boost_1.68_install/lib)
+
 message(STATUS "Boost_INCLUDE_DIR: ${Boost_INCLUDE_DIR}")
 message(STATUS "Boost_LIBRARY_DIR: ${Boost_LIBRARYDIR}")
 message(STATUS "Boost_LIBRARIES: ${Boost_LIBRARIES}")

@@ -24,7 +24,7 @@
 #include <CGAL/IO/File_medit.h>
 #include <CGAL/IO/File_tetgen.h>
 #include <CGAL/IO/io.h>
-
+#include <filesystem>
 
 // Domain
 typedef CGAL::Exact_predicates_inexact_constructions_kernel K;
@@ -89,6 +89,7 @@ int main(int argc, char* argv[])
     std::string::size_type st = fname.find_last_of("/");
     std::string::size_type ed = fname.find_last_of(".");
     std::string base_name = fname.substr(st+1,ed-st-1);
+    std::string folder_name = fname.substr(0,st+1);
 
 
     CGAL::Image_3 image;
@@ -118,5 +119,9 @@ int main(int argc, char* argv[])
     CGAL::IO::output_to_vtu(vtu_file,c3t3,CGAL::IO::ASCII);
     CGAL::IO::output_to_tetgen(base_name,c3t3);
 
+    // move vtu file to the target folder using std::filesystem
+    std::string vtu_file_name = base_name+".vtu";
+    std::string vtu_file_path = folder_name+vtu_file_name;
+    std::filesystem::copy("./all.vtu",vtu_file_path,std::filesystem::copy_options::overwrite_existing);
     return 0;
 }
