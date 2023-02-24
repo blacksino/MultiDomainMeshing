@@ -119,9 +119,12 @@ int main(int argc, char* argv[])
     CGAL::IO::output_to_vtu(vtu_file,c3t3,CGAL::IO::ASCII);
     CGAL::IO::output_to_tetgen(base_name,c3t3);
 
+    // ensure output_to_vtu has been done.
+    vtu_file.close();
+
     // move vtu file to the target folder using std::filesystem
     std::string vtu_file_name = base_name+".vtu";
     std::string vtu_file_path = folder_name+vtu_file_name;
-    std::filesystem::copy("./all.vtu",vtu_file_path,std::filesystem::copy_options::overwrite_existing);
+    std::filesystem::copy_file("all.vtu",vtu_file_path,std::filesystem::copy_options::overwrite_existing);
     return 0;
 }

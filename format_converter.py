@@ -29,6 +29,12 @@ def update_tetgen_node(node_path,deformed_vtu_path):
     meshio.write(new_node_path,d_mesh,file_format="tetgen")
     os.remove(new_node_path.replace(".node",".ele"))
 
+def copy_label(original_vtu_path,vtk_path):
+    mesh = meshio.read(original_vtu_path)
+    d_mesh = meshio.read(vtk_path)
+    new_mesh = mesh.copy()
+    new_mesh.points = d_mesh.points
+    meshio.vtk.write(vtk_path,new_mesh,fmt_version="4.2")
 
 
 
@@ -36,6 +42,8 @@ def update_tetgen_node(node_path,deformed_vtu_path):
 # vtu2vtk("/home/SENSETIME/xulixin2/RJ_demo/mesh/all.vtu",
 #         "/home/SENSETIME/xulixin2/RJ_demo/mesh/all.vtk")
 if __name__ == '__main__':
-    vtu2vtk("/home/SENSETIME/xulixin2/RJ_demo/mesh/all.vtu","/home/SENSETIME/xulixin2/RJ_demo/mesh/all.vtk")
-    print("Now,you could simulate deformation using SOFA.\n")
-    # update_tetgen_node("/home/SENSETIME/xulixin2/RJ_demo/mesh/all.node","/home/SENSETIME/xulixin2/RJ_demo/mesh/deformed.vtu")
+    # vtu2vtk("/home/SENSETIME/xulixin2/RJ_demo/mesh/all.vtu","/home/SENSETIME/xulixin2/RJ_demo/mesh/all.vtk")
+    # print("Now,you could simulate deformation using SOFA.\n")
+    vtu2vtk("/home/SENSETIME/xulixin2/RJ_demo/mesh/deformed.vtu","/home/SENSETIME/xulixin2/RJ_demo/mesh/deformed.vtk")
+    copy_label("/home/SENSETIME/xulixin2/RJ_demo/mesh/all.vtu","/home/SENSETIME/xulixin2/RJ_demo/mesh/deformed.vtk")
+    update_tetgen_node("/home/SENSETIME/xulixin2/RJ_demo/mesh/all.node","/home/SENSETIME/xulixin2/RJ_demo/mesh/deformed.vtu")
